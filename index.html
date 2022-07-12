@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+  <head>
+    <meta charset="utf-8">
+    <meta
+      http-equiv="X-UA-Compatible"
+      content="IE=edge"
+    >
+    <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1.0"
+    >
+    <title>
+      Timeline Alpine.JS
+    </title>
+    <link
+      rel="stylesheet/less"
+      type="text/css"
+      href="/assets/vendors/bootstrap/less/bootstrap.less?v=3.4.1"
+    >
+    <link
+      rel="stylesheet/less"
+      type="text/css"
+      href="/assets/less/style.less"
+    >
+  </head>
+
+  <body class="body">
+    <div
+      x-data="timeline"
+      id="app"
+    >
+      <div class="container">
+        <div class="page-header">
+          <span id="timeline-header">Timeline</span>
+        </div>
+        <ul class="timeline">
+          <template
+            x-for="(item) in timeline"
+            :key="'t-item' + item.id"
+          >
+            <li class="timeline-item">
+              <div
+                x-bind:class="item.icon_status"
+                class="timeline-badge"
+              >
+                <i x-bind:class="item.icon_class"></i>
+              </div>
+              <div class="timeline-panel">
+                <div class="timeline-heading">
+                  <h4
+                    class="timeline-title"
+                    x-html="item.title"
+                  ></h4>
+                  <div class="timeline-panel-controls">
+                    <div class="controls">
+                      <template
+                        x-for="(control, idx) in item.controls"
+                        :key="'controls' + idx"
+                      >
+                        <a
+                          href="#"
+                          x-on:click="handleClick(control.method)"
+                        >
+                          <i x-bind:class="control.icon_class"></i>
+                        </a>
+                      </template>
+                    </div>
+                    <div class="timestamp">
+                      <small
+                        class="text-muted"
+                        x-html="item.created"
+                      ></small>
+                    </div>
+                  </div>
+                </div>
+                <div
+                  class="timeline-body"
+                  x-html="item.body"
+                ></div>
+              </div>
+            </li>
+          </template>
+        </ul>
+      </div>
+
+      <span class="copy">
+        <span>
+          Базируется на примере из <a href="https://codepen.io/chrgl86/pen/rMOajm">Codepen</a>
+        </span><br />
+        <span>
+          Автор: <b>Chris</b>
+        </span><br />
+        <span>
+          Статья из коллекции <a href="https://vuejsexamples.com/a-simple-timeline-with-vue-js/">vuejsexamples.com</a>
+        </span>
+      </span>
+    </div>
+
+
+    <script>
+      const less = {
+        env: "development",
+        async: true,
+        fileAsync: true,
+        poll: 1000,
+        functions: {},
+        dumpLineNumbers: "comments",
+        relativeUrls: false,
+        rootpath: "/"
+      };
+    </script>
+    <script>
+      document.addEventListener('alpine:init', () => {
+        Alpine.data('timeline', () => ({
+          timeline: [
+            {
+              id: 5,
+              icon_class: 'glyphicon glyphicon-comment',
+              icon_status: '',
+              title: 'Admin added a comment.',
+              controls: [
+                {
+                  method: 'edit',
+                  icon_class: 'glyphicon glyphicon-pencil'
+                },
+                {
+                  method: 'delete',
+                  icon_class: 'glyphicon glyphicon-trash'
+                }
+              ],
+              created: '24. Sep 17:03',
+              body: '<p><i>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Totam, maxime alias nam dignissimos natus voluptate iure deleniti. Doloremque, perspiciatis voluptas dignissimos ex, ullam et, reprehenderit similique possimus iste commodi minima fugiat non culpa, veniam temporibus laborum. Distinctio ipsam cupiditate debitis aliquid deleniti consectetur voluptates corporis officiis tempora minus veniam, accusamus cum optio nesciunt illo nulla odio? Quidem nesciunt, omnis at quo aliquam porro amet fugit mollitia minus explicabo, possimus deserunt rem ut commodi laboriosam quia. Numquam, est facilis rem iste voluptatum. Cupiditate porro fuga saepe quis nulla mollitia, magni dicta soluta distinctio tempore voluptate quo perferendis. Maiores eveniet deleniti, nemo.</i></p>'
+            },
+            {
+              id: 4,
+              icon_class: 'glyphicon glyphicon-edit',
+              icon_status: 'success',
+              title: 'Started editing',
+              controls: [],
+              created: '24. Sep 14:48',
+              body: '<p>Someone has started editing.</p>'
+            },
+            {
+              id: 3,
+              icon_class: 'glyphicon glyphicon-hand-right',
+              icon_status: 'warning',
+              title: 'Message delegated',
+              controls: [],
+              created: '23. Sep 11:12',
+              body: '<p>This message has been delegated.</p>'
+            },
+            {
+              id: 2,
+              icon_class: 'glyphicon glyphicon-map-marker',
+              icon_status: 'danger',
+              title: 'Message approved and forwarded',
+              controls: [],
+              created: '20. Sep 15:56',
+              body: '<p>Message has been approved and forwarded to responsible.</p>'
+            },
+            {
+              id: 1,
+              icon_class: 'glyphicon glyphicon-map-marker',
+              icon_status: '',
+              title: 'Message forwarded for approval',
+              controls: [],
+              created: '19. Sep 19:49',
+              body: '<p>Message has been forwarded for approval.</p>'
+            },
+          ],
+          item: null,
+          timelineDeleteItem(id) {
+            this.timeline = _.remove(this.timeline, (item) => item.id !== id);
+          },
+          deleteItem() {
+            return true; // forward to parent
+          },
+          timelineDelete() {
+            this.delete();
+          },
+          timelineEdit() {
+            this.edit();
+          },
+          handleClick(action) {
+            switch (action) {
+              case 'delete':
+                this.timelineDelete();
+                break;
+              case 'edit':
+                this.timelineEdit();
+                break;
+
+              default:
+                console.log("Unknown method " + action)
+                break;
+            }
+          },
+          delete: function () {
+            this.timelineDeleteItem(this.item.id);
+          },
+          edit: function () {
+            console.warn('[Method]: edit -- not code logic');
+          }
+        }))
+      })
+    </script>
+    <script src="/assets/vendors/jquery/jquery-3.6.0.js"></script>
+    <script src="/assets/vendors/bootstrap/js/bootstrap.js"></script>
+    <script src="/assets/vendors/lodash/lodash-4.17.21.js"></script>
+    <script src="/assets/vendors/dayjs/dayjs.min.js"></script>
+    <script src="/assets/vendors/alpinejs/cdn.js"></script>
+    <script src="/assets/vendors/less/less.js"></script>
+  </body>
+
+</html>

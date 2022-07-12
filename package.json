@@ -1,0 +1,25 @@
+{
+  "name": "timeline-alpine-js",
+  "version": "1.0.0",
+  "author": "Skylinker <skylinkertu33@gmail.com>",
+  "license": "MIT",
+  "keywords": [
+    "timeline",
+    "alpine",
+    "alpine.js",
+    "dayjs",
+    "jquery",
+    "lodash",
+    "bootstrap",
+    "less"
+  ],
+  "scripts": {
+    "dev": "lite-server"
+  },
+  "peerDependencies": {
+    "lite-server": "2.6.1"
+  },
+  "engines": {
+    "node": "14.20.*"
+  }
+}

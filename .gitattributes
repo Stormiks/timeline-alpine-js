@@ -1,0 +1,8 @@
+* text=auto eol=lf
+*.js eol=lf
+*.vue eol=lf
+*.less eol=lf
+*.eot binary
+*.ttf binary
+*.woff binary
+*.woff2 binary
