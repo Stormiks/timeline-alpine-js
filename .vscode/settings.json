@@ -43,7 +43,7 @@
     "~": "${workspaceRoot}",
     "@": "${workspaceRoot}",
     "/": "${workspaceRoot}",
-    "assets": "${workspaceRoot}/public/assets/",
+    "assets": "${workspaceRoot}/assets/",
   },
   "cSpell.language": "en,ru",
   "search.exclude": {
