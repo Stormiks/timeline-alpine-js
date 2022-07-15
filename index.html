@@ -195,7 +195,7 @@
               body: '<p>Message has been forwarded for approval.</p>'
             },
           ],
-          item: null,
+          selectedItem: null,
           itemEditId: null,
           timelineDeleteItem(id) {
             this.timeline = _.remove(this.timeline, (item) => item.id !== id);
@@ -208,7 +208,7 @@
               editor.destroy()
             }
 
-            this.item = this.timeline[ixd];
+            this.selectedItem = this.timeline[ixd];
             this.itemEditId = item.id;
 
             ClassicEditor
@@ -226,7 +226,7 @@
             this.timeline[timelineItemIxd].body = editor.getData();
 
             editor.destroy().then(() => {
-              this.item = null
+              this.selectedItem = null
               this.itemEditId = null
             });
           },
