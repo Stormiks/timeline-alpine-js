@@ -45,7 +45,10 @@
         <div class="page-header">
           <span id="timeline-header">Timeline</span>
         </div>
-        <ul class="timeline">
+        <ul
+          class="timeline"
+          x-bind:class="timeline.length ? 'timeline-line' : false"
+        >
           <template
             x-for="(item, itemIndex) in timeline"
             :key="'t-item' + item.id + '-ixd-' + itemIndex"
@@ -67,6 +70,19 @@
                 }"
               >
                 <div class="timeline-heading">
+                  <div class="timeline-panel-controls-body">
+                    <button
+                      class="btn btn-timeline-control-collapse"
+                      type="button"
+                      x-bind:disabled="item.id === itemEditId"
+                      x-on:click="showTimelinePosts = itemIndex"
+                    >
+                      <i
+                        class="glyphicon"
+                        x-bind:class="[`glyphicon-chevron-${showTimelinePosts[itemIndex].show ? 'up' : 'down'}`]"
+                      ></i>
+                    </button>
+                  </div>
                   <h4
                     class="timeline-title"
                     x-text="item.title"
@@ -115,8 +131,10 @@
                 </div>
                 <div
                   class="timeline-body"
-                  x-bind:id="'timelime-item' + item.id"
+                  x-bind:id="'timeline-item' + item.id"
                   x-html="item.body"
+                  x-show="showTimelinePosts[itemIndex].show"
+                  x-collapse
                 ></div>
               </div>
             </li>
@@ -145,74 +163,43 @@
     <script src="/assets/vendors/dayjs/timezone.js?v=1.11.3"></script>
     <script src="/assets/vendors/dayjs/dayjs.min.js?v=1.11.3"></script>
     <script src="/assets/vendors/dayjs/ru.js?v=1.11.3"></script>
+    <script src="/assets/vendors/alpinejs/collapse.plugin.js"></script>
     <script>
       document.addEventListener('alpine:init', () => {
         Alpine.data('timeline', () => ({
-          timeline: [
-            {
-              id: 5,
-              icon_class: 'glyphicon glyphicon-comment',
-              icon_status: '',
-              title: 'Admin added a comment.',
-              controls: true,
-              created: '24. Sep 17:03',
-              body: '<p><i>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Totam, maxime alias nam dignissimos natus voluptate iure deleniti. Doloremque, perspiciatis voluptas dignissimos ex, ullam et, reprehenderit similique possimus iste commodi minima fugiat non culpa, veniam temporibus laborum. Distinctio ipsam cupiditate debitis aliquid deleniti consectetur voluptates corporis officiis tempora minus veniam, accusamus cum optio nesciunt illo nulla odio? Quidem nesciunt, omnis at quo aliquam porro amet fugit mollitia minus explicabo, possimus deserunt rem ut commodi laboriosam quia. Numquam, est facilis rem iste voluptatum. Cupiditate porro fuga saepe quis nulla mollitia, magni dicta soluta distinctio tempore voluptate quo perferendis. Maiores eveniet deleniti, nemo.</i></p>'
-            },
-            {
-              id: 4,
-              icon_class: 'glyphicon glyphicon-edit',
-              icon_status: 'success',
-              title: 'Started editing',
-              controls: false,
-              created: '24. Sep 14:48',
-              body: '<p>Someone has started editing.</p>'
-            },
-            {
-              id: 3,
-              icon_class: 'glyphicon glyphicon-hand-right',
-              icon_status: 'warning',
-              title: 'Message delegated',
-              controls: false,
-              created: '23. Sep 11:12',
-              body: '<p>This message has been delegated.</p>'
-            },
-            {
-              id: 2,
-              icon_class: 'glyphicon glyphicon-map-marker',
-              icon_status: 'danger',
-              title: 'Message approved and forwarded',
-              controls: false,
-              created: '20. Sep 15:56',
-              body: '<p>Message has been approved and forwarded to responsible.</p>'
-            },
-            {
-              id: 1,
-              icon_class: 'glyphicon glyphicon-map-marker',
-              icon_status: '',
-              title: 'Message forwarded for approval',
-              controls: false,
-              created: '19. Sep 19:49',
-              body: '<p>Message has been forwarded for approval.</p>'
-            },
-          ],
+          timeline: [],
           selectedItem: null,
           itemEditId: null,
+          showPostsTimelineDescription: [],
           timelineDeleteItem(id) {
             this.timeline = _.remove(this.timeline, (item) => item.id !== id);
+          },
+          get showTimelinePosts() {
+            return this.timeline.reduce((prev, current, ixd) => {
+              prev[ixd] = {
+                show: !current.show ? false : true
+              }
+
+              return prev;
+            }, {});
+          },
+          set showTimelinePosts(idx) {
+            this.timeline[idx].show = !this.timeline[idx].show;
           },
           handleDelete(item) {
             this.timelineDeleteItem(item.id);
           },
           handleEdit({ item, ixd }) {
             if (this.itemEditId && this.itemEditId !== item.id) {
-              editor.destroy()
+              editor.destroy();
             }
 
             this.selectedItem = this.timeline[ixd];
+            this.showTimelinePosts = ixd
             this.itemEditId = item.id;
 
             ClassicEditor
-              .create(document.querySelector('#timelime-item' + item.id), {
+              .create(document.querySelector('#timeline-item' + item.id), {
                 language: 'ru'
               })
               .then((editor) => {
@@ -226,8 +213,8 @@
             this.timeline[timelineItemIxd].body = editor.getData();
 
             editor.destroy().then(() => {
-              this.selectedItem = null
-              this.itemEditId = null
+              this.selectedItem = null;
+              this.itemEditId = null;
             });
           },
           parseCreated(strDate) {
@@ -239,6 +226,12 @@
             dayjs.extend(window.dayjs_plugin_timezone);
             dayjs.extend(window.dayjs_plugin_localizedFormat);
             dayjs.tz.setDefault('Asia/Krasnoyarsk');
+
+            fetch('/db-posts.json', {
+              method: 'GET',
+            })
+              .then((data) => data.json())
+              .then((data) => this.timeline = data);
           }
         }));
       });
