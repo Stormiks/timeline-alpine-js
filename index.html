@@ -67,6 +67,18 @@
                 }"
               >
                 <div class="timeline-heading">
+                  <div class="timeline-panel-controls-body">
+                    <button
+                      class="btn btn-timeline-control-collapse"
+                      type="button"
+                      x-on:click="showTimelinePosts = itemIndex"
+                    >
+                      <i
+                        class="glyphicon"
+                        x-bind:class="[`glyphicon-chevron-${showTimelinePosts[itemIndex].show ? 'up' : 'down'}`]"
+                      ></i>
+                    </button>
+                  </div>
                   <h4
                     class="timeline-title"
                     x-text="item.title"
@@ -115,8 +127,10 @@
                 </div>
                 <div
                   class="timeline-body"
-                  x-bind:id="'timelime-item' + item.id"
+                  x-bind:id="'timeline-item' + item.id"
                   x-html="item.body"
+                  x-show="showTimelinePosts[itemIndex].show"
+                  x-collapse
                 ></div>
               </div>
             </li>
@@ -145,6 +159,7 @@
     <script src="/assets/vendors/dayjs/timezone.js?v=1.11.3"></script>
     <script src="/assets/vendors/dayjs/dayjs.min.js?v=1.11.3"></script>
     <script src="/assets/vendors/dayjs/ru.js?v=1.11.3"></script>
+    <script src="/assets/vendors/alpinejs/collapse.plugin.js"></script>
     <script>
       document.addEventListener('alpine:init', () => {
         Alpine.data('timeline', () => ({
@@ -197,22 +212,34 @@
           ],
           selectedItem: null,
           itemEditId: null,
+          showPostsTimelineDescription: [],
           timelineDeleteItem(id) {
             this.timeline = _.remove(this.timeline, (item) => item.id !== id);
+          },
+          get showTimelinePosts() {
+            return this.timeline.reduce((prev, current, ixd) => {
+              prev[ixd] = {
+                show: !current.show ? false : true
+              }
+              return prev
+            }, {});
+          },
+          set showTimelinePosts(idx) {
+            this.timeline[idx].show = !this.timeline[idx].show
           },
           handleDelete(item) {
             this.timelineDeleteItem(item.id);
           },
           handleEdit({ item, ixd }) {
             if (this.itemEditId && this.itemEditId !== item.id) {
-              editor.destroy()
+              editor.destroy();
             }
 
             this.selectedItem = this.timeline[ixd];
             this.itemEditId = item.id;
 
             ClassicEditor
-              .create(document.querySelector('#timelime-item' + item.id), {
+              .create(document.querySelector('#timeline-item' + item.id), {
                 language: 'ru'
               })
               .then((editor) => {
@@ -226,8 +253,8 @@
             this.timeline[timelineItemIxd].body = editor.getData();
 
             editor.destroy().then(() => {
-              this.selectedItem = null
-              this.itemEditId = null
+              this.selectedItem = null;
+              this.itemEditId = null;
             });
           },
           parseCreated(strDate) {
