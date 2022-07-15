@@ -14,18 +14,20 @@
 
 .@{plugin-name} {
   list-style: none;
-  padding: 20px 0 20px;
+  padding: 20px 0 10px;
   position: relative;
 
-  &::before {
-    background-color: #eee;
-    bottom: 0;
-    content: " ";
-    left: 50px;
-    margin-left: -1.5px;
-    position: absolute;
-    top: 0;
-    width: 3px;
+  &.@{plugin-name}-line {
+    &::before {
+      background-color: #eee;
+      bottom: 0;
+      content: " ";
+      left: 50px;
+      margin-left: -1.5px;
+      position: absolute;
+      top: 0;
+      width: 3px;
+    }
   }
 
   > li {

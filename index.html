@@ -45,7 +45,10 @@
         <div class="page-header">
           <span id="timeline-header">Timeline</span>
         </div>
-        <ul class="timeline">
+        <ul
+          class="timeline"
+          x-bind:class="timeline.length ? 'timeline-line' : false"
+        >
           <template
             x-for="(item, itemIndex) in timeline"
             :key="'t-item' + item.id + '-ixd-' + itemIndex"
