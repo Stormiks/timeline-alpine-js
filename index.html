@@ -24,6 +24,19 @@
       type="text/css"
       href="/assets/less/style.less"
     >
+    <script>
+      const less = {
+        env: "development",
+        async: true,
+        fileAsync: true,
+        poll: 1000,
+        functions: {},
+        dumpLineNumbers: "comments",
+        relativeUrls: false,
+        rootpath: "/"
+      };
+    </script>
+    <script src="/assets/vendors/less/less.js?v=4.1.3"></script>
   </head>
 
   <body class="body">
@@ -37,7 +50,7 @@
         </div>
         <ul class="timeline">
           <template
-            x-for="(item) in timeline"
+            x-for="(item, itemIndex) in timeline"
             :key="'t-item' + item.id"
           >
             <li class="timeline-item">
@@ -47,36 +60,65 @@
               >
                 <i x-bind:class="item.icon_class"></i>
               </div>
-              <div class="timeline-panel">
+              <div
+                class="timeline-panel"
+                x-on:mouseenter.stop="() => {
+                  if (item.controls) $($refs['panel-controls']).show(300)
+                }"
+                x-on:mouseleave.stop="() => {
+                  if (item.controls) $($refs['panel-controls']).hide(300)
+                }"
+              >
                 <div class="timeline-heading">
                   <h4
                     class="timeline-title"
-                    x-html="item.title"
+                    x-text="item.title"
                   ></h4>
                   <div class="timeline-panel-controls">
-                    <div class="controls">
-                      <template
-                        x-for="(control, idx) in item.controls"
-                        :key="'controls' + idx"
+                    <template x-if="item.controls">
+                      <div
+                        class="controls"
+                        style="display: none;"
+                        x-bind:id="`panel-controls-${item.id}-${itemIndex}`"
                       >
-                        <a
-                          href="#"
-                          x-on:click="handleClick(control.method)"
+                        <template x-if="item.id === itemEditId">
+                          <button
+                            class="btn btn-timeline-control"
+                            type="button"
+                            x-on:click="handleSave(itemIndex)"
+                          >
+                            <i class="glyphicon glyphicon glyphicon-floppy-saved"></i>
+                          </button>
+                        </template>
+                        <template x-if="item.id !== itemEditId">
+                          <button
+                            class="btn btn-timeline-control"
+                            type="button"
+                            x-on:click="handleEdit({item, ixd: itemIndex})"
+                          >
+                            <i class="glyphicon glyphicon-pencil"></i>
+                          </button>
+                        </template>
+                        <button
+                          class="btn btn-timeline-control"
+                          type="button"
+                          x-on:click="handleDelete(item)"
                         >
-                          <i x-bind:class="control.icon_class"></i>
-                        </a>
-                      </template>
-                    </div>
+                          <i class="glyphicon glyphicon-trash"></i>
+                        </button>
+                      </div>
+                    </template>
                     <div class="timestamp">
                       <small
                         class="text-muted"
-                        x-html="item.created"
+                        x-text="parseCreated(item.created)"
                       ></small>
                     </div>
                   </div>
                 </div>
                 <div
                   class="timeline-body"
+                  x-bind:id="'timelime-item' + item.id"
                   x-html="item.body"
                 ></div>
               </div>
@@ -98,19 +140,14 @@
       </span>
     </div>
 
-
-    <script>
-      const less = {
-        env: "development",
-        async: true,
-        fileAsync: true,
-        poll: 1000,
-        functions: {},
-        dumpLineNumbers: "comments",
-        relativeUrls: false,
-        rootpath: "/"
-      };
-    </script>
+    <script src="/assets/vendors/jquery/jquery.js?v=3.6.0"></script>
+    <script src="/assets/vendors/bootstrap/js/bootstrap.js?v=3.4.1"></script>
+    <script src="/assets/vendors/lodash/lodash.js?v=4.17.21"></script>
+    <script src="/assets/vendors/dayjs/localizedFormat.js?v=1.11.3"></script>
+    <script src="/assets/vendors/dayjs/utc.js?v=1.11.3"></script>
+    <script src="/assets/vendors/dayjs/timezone.js?v=1.11.3"></script>
+    <script src="/assets/vendors/dayjs/dayjs.min.js?v=1.11.3"></script>
+    <script src="/assets/vendors/dayjs/ru.js?v=1.11.3"></script>
     <script>
       document.addEventListener('alpine:init', () => {
         Alpine.data('timeline', () => ({
@@ -120,16 +157,7 @@
               icon_class: 'glyphicon glyphicon-comment',
               icon_status: '',
               title: 'Admin added a comment.',
-              controls: [
-                {
-                  method: 'edit',
-                  icon_class: 'glyphicon glyphicon-pencil'
-                },
-                {
-                  method: 'delete',
-                  icon_class: 'glyphicon glyphicon-trash'
-                }
-              ],
+              controls: true,
               created: '24. Sep 17:03',
               body: '<p><i>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Totam, maxime alias nam dignissimos natus voluptate iure deleniti. Doloremque, perspiciatis voluptas dignissimos ex, ullam et, reprehenderit similique possimus iste commodi minima fugiat non culpa, veniam temporibus laborum. Distinctio ipsam cupiditate debitis aliquid deleniti consectetur voluptates corporis officiis tempora minus veniam, accusamus cum optio nesciunt illo nulla odio? Quidem nesciunt, omnis at quo aliquam porro amet fugit mollitia minus explicabo, possimus deserunt rem ut commodi laboriosam quia. Numquam, est facilis rem iste voluptatum. Cupiditate porro fuga saepe quis nulla mollitia, magni dicta soluta distinctio tempore voluptate quo perferendis. Maiores eveniet deleniti, nemo.</i></p>'
             },
@@ -138,7 +166,7 @@
               icon_class: 'glyphicon glyphicon-edit',
               icon_status: 'success',
               title: 'Started editing',
-              controls: [],
+              controls: false,
               created: '24. Sep 14:48',
               body: '<p>Someone has started editing.</p>'
             },
@@ -147,7 +175,7 @@
               icon_class: 'glyphicon glyphicon-hand-right',
               icon_status: 'warning',
               title: 'Message delegated',
-              controls: [],
+              controls: false,
               created: '23. Sep 11:12',
               body: '<p>This message has been delegated.</p>'
             },
@@ -156,7 +184,7 @@
               icon_class: 'glyphicon glyphicon-map-marker',
               icon_status: 'danger',
               title: 'Message approved and forwarded',
-              controls: [],
+              controls: false,
               created: '20. Sep 15:56',
               body: '<p>Message has been approved and forwarded to responsible.</p>'
             },
@@ -165,53 +193,64 @@
               icon_class: 'glyphicon glyphicon-map-marker',
               icon_status: '',
               title: 'Message forwarded for approval',
-              controls: [],
+              controls: false,
               created: '19. Sep 19:49',
               body: '<p>Message has been forwarded for approval.</p>'
             },
           ],
           item: null,
+          itemEditId: null,
           timelineDeleteItem(id) {
             this.timeline = _.remove(this.timeline, (item) => item.id !== id);
           },
-          deleteItem() {
-            return true; // forward to parent
+          handleDelete(item) {
+            this.timelineDeleteItem(item.id);
           },
-          timelineDelete() {
-            this.delete();
-          },
-          timelineEdit() {
-            this.edit();
-          },
-          handleClick(action) {
-            switch (action) {
-              case 'delete':
-                this.timelineDelete();
-                break;
-              case 'edit':
-                this.timelineEdit();
-                break;
-
-              default:
-                console.log("Unknown method " + action)
-                break;
+          handleEdit({ item, ixd }) {
+            if (this.itemEditId && this.itemEditId !== item.id) {
+              editor.destroy()
             }
+
+            this.item = this.timeline[ixd];
+            this.itemEditId = item.id;
+
+            ClassicEditor
+              .create(document.querySelector('#timelime-item' + item.id), {
+                language: 'ru'
+              })
+              .then((editor) => {
+                window.editor = editor;
+              })
+              .catch(error => {
+                console.error(error);
+              });
           },
-          delete: function () {
-            this.timelineDeleteItem(this.item.id);
+          handleSave(timelineItemIxd) {
+            this.timeline[timelineItemIxd].body = editor.getData();
+
+            editor.destroy().then(() => {
+              this.item = null
+              this.itemEditId = null
+            });
           },
-          edit: function () {
-            console.warn('[Method]: edit -- not code logic');
+          parseCreated(strDate) {
+            return dayjs(strDate).format('ll');
+          },
+          init() {
+            dayjs.locale($('html').attr('lang'));
+            dayjs.extend(window.dayjs_plugin_utc);
+            dayjs.extend(window.dayjs_plugin_timezone);
+            dayjs.extend(window.dayjs_plugin_localizedFormat);
+            dayjs.tz.setDefault('Asia/Krasnoyarsk');
           }
-        }))
-      })
+        }));
+      });
+
+      document.addEventListener('alpine:initialized', () => {
+        document.write("<script defer src='/assets/vendors/ckeditorjs/ckeditor.js'><\/script><script defer src='/assets/vendors/ckeditorjs/ru.js'><\/script>");
+      });
     </script>
-    <script src="/assets/vendors/jquery/jquery.js?v=3.6.0"></script>
-    <script src="/assets/vendors/bootstrap/js/bootstrap.js?v=3.4.1"></script>
-    <script src="/assets/vendors/lodash/lodash.js?v=4.17.21"></script>
-    <script src="/assets/vendors/dayjs/dayjs.min.js?v=1.11.3"></script>
     <script src="/assets/vendors/alpinejs/cdn.js?v=3.10.3"></script>
-    <script src="/assets/vendors/less/less.js?v=4.1.3"></script>
   </body>
 
 </html>
