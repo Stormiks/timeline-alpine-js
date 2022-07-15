@@ -1,3 +1,5 @@
+@import 'lds-spinner';
+
 @plugin-name: timeline;
 
 .@{plugin-name}-badge {
@@ -173,6 +175,26 @@
           right: auto;
           top: 27px;
         }
+      }
+    }
+  }
+
+  &-container {
+    &.spinner {
+      position: relative;
+      padding: 4em 0;
+
+      .spinner-loaders {
+        background-color: @color-white;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 101;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
       }
     }
   }
