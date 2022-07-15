@@ -40,10 +40,7 @@
   </head>
 
   <body class="body">
-    <div
-      x-data="timeline"
-      id="app"
-    >
+    <div x-data="timeline">
       <div class="container">
         <div class="page-header">
           <span id="timeline-header">Timeline</span>
@@ -51,7 +48,7 @@
         <ul class="timeline">
           <template
             x-for="(item, itemIndex) in timeline"
-            :key="'t-item' + item.id"
+            :key="'t-item' + item.id + '-ixd-' + itemIndex"
           >
             <li class="timeline-item">
               <div
@@ -63,10 +60,10 @@
               <div
                 class="timeline-panel"
                 x-on:mouseenter.stop="() => {
-                  if (item.controls) $($refs['panel-controls']).show(300)
+                  if (item.controls) $(`#panel-controls-${item.id}-${itemIndex}`).show(300)
                 }"
                 x-on:mouseleave.stop="() => {
-                  if (item.controls) $($refs['panel-controls']).hide(300)
+                  if (item.controls) $(`#panel-controls-${item.id}-${itemIndex}`).hide(300)
                 }"
               >
                 <div class="timeline-heading">
