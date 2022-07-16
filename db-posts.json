@@ -13,7 +13,7 @@
     "icon_class": "glyphicon glyphicon-edit",
     "icon_status": "success",
     "title": "Started editing",
-    "controls": "false",
+    "controls": true,
     "created": "24. Sep 14: 48",
     "body": "<p>Someone has started editing.</p>"
   },
@@ -22,7 +22,7 @@
     "icon_class": "glyphicon glyphicon-hand-right",
     "icon_status": "warning",
     "title": "Message delegated",
-    "controls": false,
+    "controls": true,
     "created": "23. Sep 11: 12",
     "body": "<p>This message has been delegated.</p>"
   },
@@ -31,7 +31,7 @@
     "icon_class": "glyphicon glyphicon-map-marker",
     "icon_status": "danger",
     "title": "Message approved and forwarded",
-    "controls": false,
+    "controls": true,
     "created": "20. Sep 15: 56",
     "body": "<p>Lorem ipsum dolor sit amet consectetur, adipisicing elit. Illo molestiae voluptatem quisquam distinctio, minus, nemo quis voluptatum numquam maxime voluptatibus laborum veniam fugiat. Quae dolorum impedit quidem repudiandae cumque deserunt?</p><p>Sequi ipsam iusto quidem atque, voluptatem tempore dolorum nostrum a? Ipsum eligendi earum in ut quod iste, eum unde ratione sapiente, voluptas at excepturi laboriosam eius a quaerat ducimus provident!</p><ul><li>Corrupti praesentium quibusdam inventore nisi fugit!</li><li>Corrupti voluptate magni cumque eos reprehenderit nulla molestias atque tempora?</li><li>Enim, iure! Tenetur iusto enim tempora nam atque cumque at aliquam saepe unde veritatis. Quasi soluta maiores at rerum, deserunt molestiae.</li><li>Eum, hic. Dolore veritatis fugiat aliquam cupiditate quod hic, est facere? Laboriosam architecto nulla quam modi doloremque iure distinctio blanditiis sunt mollitia pariatur.</li></ul><p>Nihil, rerum et. Sapiente ab nam aliquam quibusdam mollitia earum, voluptatem a inventore cupiditate totam dignissimos natus culpa expedita magnam necessitatibus? Perspiciatis saepe ratione impedit illum at non numquam in. Dignissimos voluptate ipsam porro mollitia omnis ex aliquam, nam aperiam rem corrupti beatae dolore optio quos pariatur maxime esse molestiae magni laboriosam minima ipsum aspernatur numquam. Saepe quo adipisci minus.</p>"
   },
@@ -40,7 +40,7 @@
     "icon_class": "glyphicon glyphicon-map-marker",
     "icon_status": "",
     "title": "Message forwarded for approval",
-    "controls": false,
+    "controls": true,
     "created": "19. Sep 19: 49",
     "body": "<p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Consectetur minus eos quod labore minima molestias soluta laudantium id consequatur, aut corrupti ipsum ad sapiente esse consequuntur! Blanditiis veritatis dolore excepturi, in eaque rerum ea inventore! Dolore velit eum suscipit incidunt totam labore cupiditate molestiae accusamus asperiores in voluptate aliquam blanditiis repudiandae nostrum porro quia debitis quibusdam, tempore quam eos dolores voluptas excepturi aliquid numquam? Sapiente veritatis eum dolor illo eligendi facere dicta provident, voluptatem dignissimos ut perferendis vel. Nam deserunt quo minus nemo aliquid corporis inventore eum odit illum ipsam autem eaque, exercitationem incidunt fuga eligendi minima sed eius iste.</p>"
   }
