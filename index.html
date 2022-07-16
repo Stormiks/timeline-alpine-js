@@ -40,147 +40,145 @@
   </head>
 
   <body class="body">
-    <div x-data="timeline">
-      <div class="container">
-        <div class="page-header">
-          <span id="timeline-header">Timeline</span>
-        </div>
-        <main>
-          <section
-            class="timeline-container"
+    <div class="container">
+      <header class="page-header">
+        <span id="timeline-header">Timeline</span>
+      </header>
+      <main>
+        <section
+          class="timeline-container"
+          x-data="timeline"
           x-cloak
+          x-bind:class="[!timeline.length ? 'spinner' : false]"
+        >
+          <div
+            class="spinner-loaders"
+            x-show="!timeline.length"
           >
-            <div
-              class="spinner-loaders"
-              x-show="!timeline.length"
-            >
-              <div class="lds-grid">
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-                <div></div>
-              </div>
+            <div class="lds-grid">
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
+              <div></div>
             </div>
+          </div>
 
-            <ul
-              class="timeline"
-              x-cloak
-              x-show="timeline.length"
-              x-transition.duration.350ms
-              x-bind:class="timeline.length ? 'timeline-line' : false"
+          <ul
+            class="timeline"
+            x-show="timeline.length"
+            x-transition.duration.350ms
+            x-bind:class="timeline.length ? 'timeline-line' : false"
+          >
+            <template
+              x-for="(item, itemIndex) in timeline"
+              :key="'t-item' + item.id + '-ixd-' + itemIndex"
             >
-              <template
-                x-for="(item, itemIndex) in timeline"
-                :key="'t-item' + item.id + '-ixd-' + itemIndex"
-              >
-                <li class="timeline-item">
-                  <div
-                    x-bind:class="item.icon_status"
-                    class="timeline-badge"
-                  >
-                    <i x-bind:class="item.icon_class"></i>
-                  </div>
-                  <div
-                    class="timeline-panel"
-                    x-on:mouseenter.stop="() => {
+              <li class="timeline-item">
+                <div
+                  x-bind:class="item.icon_status"
+                  class="timeline-badge"
+                >
+                  <i x-bind:class="item.icon_class"></i>
+                </div>
+                <div
+                  class="timeline-panel"
+                  x-on:mouseenter.stop="() => {
                       if (item.controls) $(`#panel-controls-${item.id}-${itemIndex}`).show(300)
                     }"
-                    x-on:mouseleave.stop="() => {
+                  x-on:mouseleave.stop="() => {
                       if (item.controls) $(`#panel-controls-${item.id}-${itemIndex}`).hide(300)
                     }"
-                  >
-                    <div class="timeline-heading">
-                      <div class="timeline-panel-controls-body">
-                        <button
-                          class="btn btn-timeline-control-collapse"
-                          type="button"
-                          x-bind:disabled="item.id === itemEditId"
-                          x-on:click="showTimelinePosts = itemIndex"
+                >
+                  <div class="timeline-heading">
+                    <div class="timeline-panel-controls-body">
+                      <button
+                        class="btn btn-timeline-control-collapse"
+                        type="button"
+                        x-bind:disabled="item.id === itemEditId"
+                        x-on:click="showTimelinePosts = itemIndex"
+                      >
+                        <i
+                          class="glyphicon"
+                          x-bind:class="[`glyphicon-chevron-${showTimelinePosts[itemIndex].show ? 'up' : 'down'}`]"
+                        ></i>
+                      </button>
+                    </div>
+                    <h4
+                      class="timeline-title"
+                      x-text="item.title"
+                    ></h4>
+                    <div class="timeline-panel-controls">
+                      <template x-if="item.controls">
+                        <div
+                          class="controls"
+                          x-bind:id="`panel-controls-${item.id}-${itemIndex}`"
                         >
-                          <i
-                            class="glyphicon"
-                            x-bind:class="[`glyphicon-chevron-${showTimelinePosts[itemIndex].show ? 'up' : 'down'}`]"
-                          ></i>
-                        </button>
-                      </div>
-                      <h4
-                        class="timeline-title"
-                        x-text="item.title"
-                      ></h4>
-                      <div class="timeline-panel-controls">
-                        <template x-if="item.controls">
-                          <div
-                            class="controls"
-                            style="display: none;"
-                            x-bind:id="`panel-controls-${item.id}-${itemIndex}`"
-                          >
-                            <template x-if="item.id === itemEditId">
-                              <button
-                                class="btn btn-timeline-control"
-                                type="button"
-                                x-on:click="handleSave(itemIndex)"
-                              >
-                                <i class="glyphicon glyphicon glyphicon-floppy-saved"></i>
-                              </button>
-                            </template>
-                            <template x-if="item.id !== itemEditId">
-                              <button
-                                class="btn btn-timeline-control"
-                                type="button"
-                                x-on:click="handleEdit({item, ixd: itemIndex})"
-                              >
-                                <i class="glyphicon glyphicon-pencil"></i>
-                              </button>
-                            </template>
+                          <template x-if="item.id === itemEditId">
                             <button
                               class="btn btn-timeline-control"
                               type="button"
-                              x-on:click="handleDelete(item)"
+                              x-on:click="handleSave(itemIndex)"
                             >
-                              <i class="glyphicon glyphicon-trash"></i>
+                              <i class="glyphicon glyphicon glyphicon-floppy-saved"></i>
                             </button>
-                          </div>
-                        </template>
-                        <div class="timestamp">
-                          <small
-                            class="text-muted"
-                            x-text="parseCreated(item.created)"
-                          ></small>
+                          </template>
+                          <template x-if="item.id !== itemEditId">
+                            <button
+                              class="btn btn-timeline-control"
+                              type="button"
+                              x-on:click="handleEdit({item, ixd: itemIndex})"
+                            >
+                              <i class="glyphicon glyphicon-pencil"></i>
+                            </button>
+                          </template>
+                          <button
+                            class="btn btn-timeline-control"
+                            type="button"
+                            x-on:click="handleDelete(item)"
+                          >
+                            <i class="glyphicon glyphicon-trash"></i>
+                          </button>
                         </div>
+                      </template>
+                      <div class="timestamp">
+                        <small
+                          class="text-muted"
+                          x-text="parseCreated(item.created)"
+                        ></small>
                       </div>
                     </div>
-                    <div
-                      class="timeline-body"
-                      x-bind:id="'timeline-item' + item.id"
-                      x-html="item.body"
-                      x-show="showTimelinePosts[itemIndex].show"
-                      x-collapse
-                    ></div>
                   </div>
-                </li>
-              </template>
-            </ul>
-          </section>
-        </main>
-      </div>
-
-      <span class="copy">
-        <span>
-          Базируется на примере из <a href="https://codepen.io/chrgl86/pen/rMOajm">Codepen</a>
-        </span><br />
-        <span>
-          Автор: <b>Chris</b>
-        </span><br />
-        <span>
-          Статья из коллекции <a href="https://vuejsexamples.com/a-simple-timeline-with-vue-js/">vuejsexamples.com</a>
-        </span>
-      </span>
+                  <div
+                    class="timeline-body"
+                    x-bind:id="'timeline-item' + item.id"
+                    x-html="item.body"
+                    x-show="showTimelinePosts[itemIndex].show"
+                    x-collapse
+                  ></div>
+                </div>
+              </li>
+            </template>
+          </ul>
+        </section>
+      </main>
     </div>
+
+    <span class="copy">
+      <span>
+        Базируется на примере из <a href="https://codepen.io/chrgl86/pen/rMOajm">Codepen</a>
+      </span><br />
+      <span>
+        Автор: <b>Chris</b>
+      </span><br />
+      <span>
+        Статья из коллекции <a href="https://vuejsexamples.com/a-simple-timeline-with-vue-js/">vuejsexamples.com</a>
+      </span>
+    </span>
 
     <script src="/assets/vendors/jquery/jquery.js?v=3.6.0"></script>
     <script src="/assets/vendors/bootstrap/js/bootstrap.js?v=3.4.1"></script>
