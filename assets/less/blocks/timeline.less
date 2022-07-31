@@ -1,5 +1,9 @@
 @import 'lds-spinner';
 
+[x-cloak] {
+  display: none !important;
+}
+
 @plugin-name: timeline;
 
 .@{plugin-name}-badge {
@@ -42,7 +46,7 @@
 
 .@{plugin-name} {
   list-style: none;
-  padding: 20px 0 10px;
+  padding: 20px 0 20px;
   position: relative;
 
   &.@{plugin-name}-line {
@@ -61,6 +65,10 @@
   > .@{plugin-name}-item {
     margin-bottom: 20px;
     position: relative;
+
+    &:last-child {
+      margin-bottom: 0;
+    }
 
     &::before,
     &::after {
@@ -93,7 +101,7 @@
       flex-direction: row;
       position: absolute;
       padding-right: 5px;
-      right: 8px;
+      right: 4px;
       top: 2px;
 
       > *:not(:first-of-type) {
@@ -105,6 +113,8 @@
       }
 
       &-body {
+        margin-right: 10px;
+
         .btn-@{plugin-name}-control-collapse {
           background-color: transparent;
         }
@@ -116,6 +126,8 @@
       }
 
       .controls {
+        display: none;
+
         .btn {
           background-color: transparent;
           font-size: 1.4rem;
