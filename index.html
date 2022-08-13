@@ -257,7 +257,10 @@
                 method: 'GET',
               })
                 .then((data) => data.json())
-                .then((data) => this.timeline = data);
+                .then((data) => this.timeline = data)
+                .catch((err) => {
+                  console.trace(err);
+                });
             }, 3000);
           }
         }));
